@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Virtual Garden</title>
+    <style>
+        body {
+            background-color: rgb(255, 248, 241);
+            background-image: url('./Images/welcome.png');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        
+        .button {
+            background-color: rgb(118, 169, 131);
+            margin-top: 315px;
+            width: 75px;
+            height: 40px;
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.1s ease-in-out;
+        }
+        
+        .button a {
+            font-family: 'Verdana';
+            color: black;
+            text-align: center;
+            text-decoration: none;
+        }
+        
+        .button:hover {
+            color: black;
+            background-color: rgb(63, 126, 83);
+            transform: scale(0.9);
+        }
+        
+        .loading {
+            margin-top: 315px;
+            width: 50px;
+            height: 50px;
+            border: 5px solid #ffffff;
+            border-top: 5px solid #45935e;
+            border-radius: 50%;
+            animation: spin 1.5s linear infinite;
+            display: none;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <audio autoplay loop>
+        <source src="./audio/Bgm1.mp3" type="audio/mpeg">
+    </audio>
+    
+    <center>
+        <div id="buttonContainer">
+            <div class="button" onclick="startLoading()" id="enterButton">
+                <a>Enter</a>
+            </div>
+        </div>
+        <div class="loading" id="loading"></div>
+    </center>
+
+    <div class="container">
+        <div class="loader"></div>
+    </div>
+
+    <script>
+        function startLoading() {
+            document.getElementById('enterButton').style.display = 'none';
+            document.getElementById('loading').style.display = 'block';
+            setTimeout(() => {
+                window.location.href = "garden.html";
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
