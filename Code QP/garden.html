@@ -163,205 +163,210 @@ button#sellPlants:hover {
     <button id="loadGame" class="control-button">Load Game</button>
 
     <script>
-    
     document.addEventListener('DOMContentLoaded', () => {
-    const seedInventory = document.getElementById('seedInventory');
-    const harvestInventory = document.getElementById('harvestInventory');
-    const gardenArea = document.getElementById('gardenArea');
-    const minigameResult = document.getElementById('minigameResult');
-    const playMinigameButton = document.getElementById('playMinigame');
-    const saveGameButton = document.getElementById('saveGame');
-    const loadGameButton = document.getElementById('loadGame');
-    const waterPlantsButton = document.getElementById('waterPlants');
-    const harvestPlantsButton = document.getElementById('harvestPlants');
-    const sellPlantsButton = document.getElementById('sellPlants');
+        const seedInventory = document.getElementById('seedInventory');
+        const harvestInventory = document.getElementById('harvestInventory');
+        const gardenArea = document.getElementById('gardenArea');
+        const minigameResult = document.getElementById('minigameResult');
+        const playMinigameButton = document.getElementById('playMinigame');
+        const saveGameButton = document.getElementById('saveGame');
+        const loadGameButton = document.getElementById('loadGame');
+        const waterPlantsButton = document.getElementById('waterPlants');
+        const harvestPlantsButton = document.getElementById('harvestPlants');
+        const sellPlantsButton = document.getElementById('sellPlants');
 
-    const seeds = ['Tomato', 'Carrot', 'Lettuce', 'Pepper', 'Strawberry'];
-    const seedInventoryData = {};
-    const harvestInventoryData = {};
+        const seeds = ['Tomato', 'Carrot', 'Lettuce', 'Pepper', 'Strawberry'];
+        const seedInventoryData = {};
+        const harvestInventoryData = {};
 
-    const gardenSize = 24;
-    const plants = [];
+        const gardenSize = 24;
+        const plants = [];
 
-    function initializeGarden() {
-        gardenArea.innerHTML = '';
-        for (let i = 0; i < gardenSize; i++) {
-            const button = document.createElement('button');
-            button.className = 'garden-spot';
-            button.addEventListener('click', () => plantSeed(button));
-            gardenArea.appendChild(button);
-            plants.push({ element: button, type: null, stage: null });
-        }
-    }
-
-    function updateInventory() {
-        seedInventory.innerHTML = '';
-        for (const seed in seedInventoryData) {
-            const li = document.createElement('li');
-            const button = document.createElement('button');
-            button.className = 'seed-button';
-            button.textContent = `${seed}: ${seedInventoryData[seed]}`;
-            button.addEventListener('click', () => selectSeed(seed));
-            li.appendChild(button);
-            seedInventory.appendChild(li);
-        }
-
-        harvestInventory.innerHTML = '';
-        for (const plant in harvestInventoryData) {
-            const li = document.createElement('li');
-            li.textContent = `${plant}: ${harvestInventoryData[plant]}`;
-            li.style.color = "#4CAF50";
-            harvestInventory.appendChild(li);
-        }
-    }
-
-    let selectedSeed = null;
-
-    function selectSeed(seed) {
-        if (seedInventoryData[seed] > 0) {
-            if (confirm(`Do you want to plant a ${seed} seed?`)) {
-                selectedSeed = seed;
+        function initializeGarden() {
+            gardenArea.innerHTML = '';
+            for (let i = 0; i < gardenSize; i++) {
+                const button = document.createElement('button');
+                button.className = 'garden-spot';
+                button.addEventListener('click', () => plantSeed(button));
+                gardenArea.appendChild(button);
+                plants.push({ element: button, type: null, stage: null });
             }
-        } else {
-            alert(`You don't have enough ${seed} seeds to plant.`);
         }
-    }
 
-    function plantSeed(button) {
-        if (selectedSeed && seedInventoryData[selectedSeed] > 0) {
-            const plantDiv = document.createElement('div');
-            plantDiv.className = 'plant seed';
-            plantDiv.textContent = selectedSeed[0];
-            button.appendChild(plantDiv);
-            const plantIndex = Array.from(gardenArea.children).indexOf(button);
-            plants[plantIndex] = { element: plantDiv, type: selectedSeed, stage: 'seed' };
-
-            seedInventoryData[selectedSeed]--;
-            updateInventory();
-
-            setTimeout(() => growPlant(plantIndex), 5000);
-        }
-    }
-
-   
-    function growPlant(index) {
-        const plant = plants[index];
-        if (plant.stage === 'seed') {
-            plant.element.className = 'plant sprout';
-            plant.stage = 'sprout';
-            setTimeout(() => growPlant(index), 5000);
-        } else if (plant.stage === 'sprout') {
-            plant.element.className = 'plant mature';
-            plant.stage = 'mature';
-        }
-    }
-
-    function waterPlants() {
-        plants.forEach((plant, index) => {
-            if (plant.stage === 'seed' || plant.stage === 'sprout') {
-                growPlant(index);
+        function updateInventory() {
+            seedInventory.innerHTML = '';
+            for (const seed in seedInventoryData) {
+                const li = document.createElement('li');
+                const button = document.createElement('button');
+                button.className = 'seed-button';
+                button.textContent = ${seed}: ${seedInventoryData[seed]};
+                button.addEventListener('click', () => selectSeed(seed));
+                li.appendChild(button);
+                seedInventory.appendChild(li);
             }
-        });
-    }
 
-    function harvestPlants() {
-        plants.forEach((plant, index) => {
-            if (plant.stage === 'mature') {
-                const plantType = plant.type;
-                if (!harvestInventoryData[plantType]) {
-                    harvestInventoryData[plantType] = 0;
+            harvestInventory.innerHTML = '';
+            for (const plant in harvestInventoryData) {
+                const li = document.createElement('li');
+                li.textContent = ${plant}: ${harvestInventoryData[plant]};
+                li.style.color = "#4CAF50";
+                harvestInventory.appendChild(li);
+            }
+        }
+
+        let selectedSeed = null;
+
+        function selectSeed(seed) {
+            if (seedInventoryData[seed] > 0) {
+                if (confirm(Do you want to plant a ${seed} seed?)) {
+                    selectedSeed = seed;
                 }
-                harvestInventoryData[plantType]++;
-                plant.element.remove();
-                plants[index] = { element: plant.element.parentElement, type: null, stage: null };
-                updateInventory();
-            }
-        });
-    }
-
-    function sellPlants() {
-        const plantToSell = prompt('Which plant would you like to sell? (Tomato, Carrot, Lettuce, Pepper, Strawberry)');
-        if (plantToSell && harvestInventoryData[plantToSell]) {
-            const quantity = parseInt(prompt(`You have ${harvestInventoryData[plantToSell]} ${plantToSell}(s). How many would you like to sell?`), 10);
-            if (!isNaN(quantity) && quantity > 0 && quantity <= harvestInventoryData[plantToSell]) {
-                harvestInventoryData[plantToSell] -= quantity;
-                if (harvestInventoryData[plantToSell] === 0) {
-                    delete harvestInventoryData[plantToSell];
-                }
-                alert(`You sold ${quantity} ${plantToSell}(s)!`);
             } else {
-                alert(`Invalid quantity. You can sell up to ${harvestInventoryData[plantToSell]} ${plantToSell}(s).`);
+                alert(You don't have enough ${seed} seeds to plant.);
             }
-        } else {
-            alert('You don\'t have any of that plant to sell.');
         }
-        updateInventory();
-    }
 
-    function playMinigame() {
-        const randomSeed = seeds[Math.floor(Math.random() * seeds.length)];
-        if (!seedInventoryData[randomSeed]) {
-            seedInventoryData[randomSeed] = 0;
+        function plantSeed(button) {
+            if (selectedSeed && seedInventoryData[selectedSeed] > 0) {
+                const plantDiv = document.createElement('div');
+                plantDiv.className = 'plant seed';
+                plantDiv.textContent = selectedSeed[0];
+                button.appendChild(plantDiv);
+                const plantIndex = Array.from(gardenArea.children).indexOf(button);
+                plants[plantIndex] = { element: plantDiv, type: selectedSeed, stage: 'seed' };
+
+                seedInventoryData[selectedSeed]--;
+                updateInventory();
+
+                setTimeout(() => growPlant(plantIndex), 5000);
+            }
         }
-        seedInventoryData[randomSeed]++;
-        minigameResult.textContent = `You won a ${randomSeed} seed!`;
-        minigameResult.style.color = "#4CAF50";
-        updateInventory();
-        
-        setTimeout(() => {
-            minigameResult.textContent = '';
-        }, 5000);
-    }
 
-    function saveGame() {
-        const gameState = {
-            seedInventoryData,
-            harvestInventoryData,
-            plants: plants.map(plant => ({
-                type: plant.type,
-                stage: plant.stage,
-            })),
-        };
-        localStorage.setItem('gameState', JSON.stringify(gameState));
-        alert('Game saved!');
-    }
+        function growPlant(index) {
+            const plant = plants[index];
+            if (plant.stage === 'seed') {
+                plant.element.className = 'plant sprout';
+                plant.stage = 'sprout';
+                setTimeout(() => growPlant(index), 5000);
+            } else if (plant.stage === 'sprout') {
+                plant.element.className = 'plant mature';
+                plant.stage = 'mature';
+            }
+        }
 
-    function loadGame() {
-        const savedState = localStorage.getItem('gameState');
-        if (savedState) {
-            const gameState = JSON.parse(savedState);
-            Object.assign(seedInventoryData, gameState.seedInventoryData);
-            Object.assign(harvestInventoryData, gameState.harvestInventoryData);
-
-            initializeGarden();
-            gameState.plants.forEach((plantData, index) => {
-                if (plantData.type) {
-                    const plantDiv = document.createElement('div');
-                    plantDiv.className = `plant ${plantData.stage}`;
-                    plantDiv.textContent = plantData.type[0];
-                    const button = gardenArea.children[index];
-                    button.appendChild(plantDiv);
-                    plants[index] = { element: plantDiv, type: plantData.type, stage: plantData.stage };
+        function waterPlants() {
+            plants.forEach((plant, index) => {
+                if (plant.stage === 'seed' || plant.stage === 'sprout') {
+                    growPlant(index);
                 }
             });
-
-            updateInventory();
-        } else {
-            alert('No saved game found.');
         }
-    }
 
-    playMinigameButton.addEventListener('click', playMinigame);
-    saveGameButton.addEventListener('click', saveGame);
-    loadGameButton.addEventListener('click', loadGame);
-    waterPlantsButton.addEventListener('click', waterPlants);
-    harvestPlantsButton.addEventListener('click', harvestPlants);
-    sellPlantsButton.addEventListener('click', sellPlants);
+        function harvestPlants() {
+            plants.forEach((plant, index) => {
+                if (plant.stage === 'mature') {
+                    const plantType = plant.type;
+                    if (!harvestInventoryData[plantType]) {
+                        harvestInventoryData[plantType] = 0;
+                    }
+                    harvestInventoryData[plantType]++;
+                    plant.element.remove();
+                    plants[index] = { element: plant.element.parentElement, type: null, stage: null };
+                    updateInventory();
+                }
+            });
+        }
 
-    initializeGarden();
-    updateInventory();
-});
+        function sellPlants() {
+            const plantToSell = prompt('Which plant would you like to sell? (Tomato, Carrot, Lettuce, Pepper, Strawberry)');
+            if (plantToSell) {
+                const normalizedPlant = plantToSell.trim().toLowerCase();
+                const harvestPlantKey = Object.keys(harvestInventoryData).find(
+                    plant => plant.toLowerCase() === normalizedPlant
+                );
+                if (harvestPlantKey && harvestInventoryData[harvestPlantKey] > 0) {
+                    const quantity = parseInt(prompt(You have ${harvestInventoryData[harvestPlantKey]} ${harvestPlantKey}(s). How many would you like to sell?), 10);
+                    if (!isNaN(quantity) && quantity > 0 && quantity <= harvestInventoryData[harvestPlantKey]) {
+                        harvestInventoryData[harvestPlantKey] -= quantity;
+                        if (harvestInventoryData[harvestPlantKey] === 0) {
+                            delete harvestInventoryData[harvestPlantKey];
+                        }
+                        alert(You sold ${quantity} ${harvestPlantKey}(s)!);
+                    } else {
+                        alert(Invalid quantity. You can sell up to ${harvestInventoryData[harvestPlantKey]} ${harvestPlantKey}(s).);
+                    }
+                } else {
+                    alert(You don't have enough ${plantToSell} plants to sell.);
+                }
+            } else {
+                alert('You don\'t have any of that plant to sell.');
+            }
+            updateInventory();
+        }
 
+        function playMinigame() {
+            const randomSeed = seeds[Math.floor(Math.random() * seeds.length)];
+            if (!seedInventoryData[randomSeed]) {
+                seedInventoryData[randomSeed] = 0;
+            }
+            seedInventoryData[randomSeed]++;
+            minigameResult.textContent = You won a ${randomSeed} seed!;
+            minigameResult.style.color = "#4CAF50";
+            updateInventory();
+
+            setTimeout(() => {
+                minigameResult.textContent = '';
+            }, 5000);
+        }
+
+        function saveGame() {
+            const gameState = {
+                seedInventoryData,
+                harvestInventoryData,
+                plants: plants.map(plant => ({
+                    type: plant.type,
+                    stage: plant.stage,
+                })),
+            };
+            localStorage.setItem('gameState', JSON.stringify(gameState));
+            alert('Game saved!');
+        }
+
+        function loadGame() {
+            const savedState = localStorage.getItem('gameState');
+            if (savedState) {
+                const gameState = JSON.parse(savedState);
+                Object.assign(seedInventoryData, gameState.seedInventoryData);
+                Object.assign(harvestInventoryData, gameState.harvestInventoryData);
+
+                initializeGarden();
+                gameState.plants.forEach((plantData, index) => {
+                    if (plantData.type) {
+                        const plantDiv = document.createElement('div');
+                        plantDiv.className = plant ${plantData.stage};
+                        plantDiv.textContent = plantData.type[0];
+                        const button = gardenArea.children[index];
+                        button.appendChild(plantDiv);
+                        plants[index] = { element: plantDiv, type: plantData.type, stage: plantData.stage };
+                    }
+                });
+
+                updateInventory();
+            } else {
+                alert('No saved game found.');
+            }
+        }
+
+        playMinigameButton.addEventListener('click', playMinigame);
+        saveGameButton.addEventListener('click', saveGame);
+        loadGameButton.addEventListener('click', loadGame);
+        waterPlantsButton.addEventListener('click', waterPlants);
+        harvestPlantsButton.addEventListener('click', harvestPlants);
+        sellPlantsButton.addEventListener('click', sellPlants);
+
+        initializeGarden();
+        updateInventory();
+    });
     </script>
 </body>
 </html>
